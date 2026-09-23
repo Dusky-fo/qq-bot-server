@@ -1,22 +1,42 @@
-from fastapi import FastAPI, Request
+import os
+import asyncio
+from fastapi import FastAPI
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
+
+
+APP_ID = os.getenv("APP_ID")
+APP_SECRET = os.getenv("APP_SECRET")
 
 
 @app.get("/")
 def home():
     return {
-        "status": "大冒险QQ机器人服务器运行正常"
+        "status": "QQ机器人运行中",
+        "appid": APP_ID
     }
 
 
-@app.post("/qq/callback")
-async def qq_callback(request: Request):
-    data = await request.json()
+async def qq_bot_start():
+    """
+    QQ机器人连接入口
+    后续这里接QQ官方WebSocket
+    """
 
-    print("收到QQ消息:")
-    print(data)
+    print("QQ机器人启动")
+    print("APP_ID:", APP_ID)
 
-    return {
-        "code": 0
-    }
+    while True:
+        # 保持后台运行
+        await asyncio.sleep(60)
+
+
+@app.on_event("startup")
+async def startup_event():
+
+    asyncio.create_task(
+        qq_bot_start()
+    )
