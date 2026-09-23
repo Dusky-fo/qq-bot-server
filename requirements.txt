@@ -1,2 +1,4 @@
+qq-botpy
 fastapi
 uvicorn
+python-dotenv
