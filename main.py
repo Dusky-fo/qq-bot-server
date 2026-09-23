@@ -1,42 +1,20 @@
-import os
-import asyncio
-from fastapi import FastAPI
-from dotenv import load_dotenv
+import botpy
 
-load_dotenv()
+class MyClient(botpy.Client):
 
-app = FastAPI()
+    async def on_ready(self):
+        print("QQ机器人上线")
 
 
-APP_ID = os.getenv("APP_ID")
-APP_SECRET = os.getenv("APP_SECRET")
+    async def on_at_message_create(self, message):
+        await message.reply(
+            content="你好，我上线了"
+        )
 
 
-@app.get("/")
-def home():
-    return {
-        "status": "QQ机器人运行中",
-        "appid": APP_ID
-    }
+client = MyClient()
 
-
-async def qq_bot_start():
-    """
-    QQ机器人连接入口
-    后续这里接QQ官方WebSocket
-    """
-
-    print("QQ机器人启动")
-    print("APP_ID:", APP_ID)
-
-    while True:
-        # 保持后台运行
-        await asyncio.sleep(60)
-
-
-@app.on_event("startup")
-async def startup_event():
-
-    asyncio.create_task(
-        qq_bot_start()
-    )
+client.run(
+    appid=APP_ID,
+    secret=APP_SECRET
+)
